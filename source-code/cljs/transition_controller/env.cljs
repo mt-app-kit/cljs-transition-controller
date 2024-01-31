@@ -54,20 +54,6 @@
 ;; ----------------------------------------------------------------------------
 ;; ----------------------------------------------------------------------------
 
-(defn get-transition-name
-  ; @ignore
-  ;
-  ; @param (keyword) controller-id
-  ;
-  ; @usage
-  ; (get-transition-name :my-transition-controller)
-  ; =>
-  ; :fade-in
-  ;
-  ; @return (keyword)
-  [controller-id]
-  (get-in @state/CONTROLLERS [controller-id :transition-name]))
-
 (defn get-transition-duration
   ; @ignore
   ;

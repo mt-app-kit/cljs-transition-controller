@@ -4,6 +4,7 @@
               [transition-controller.env   :as env]
               [fruits.random.api :as random]
               [fruits.vector.api :as vector]
+              [fruits.map.api :refer [dissoc-in]]
               [time.api :as time]))
 
 ;; ----------------------------------------------------------------------------
@@ -13,54 +14,61 @@
   ; @ignore
   ;
   ; @description
-  ; Stores the given content in the content pool.
+  ; Stores the given content in the content pool of a specific controller.
   ;
   ; @param (keyword) controller-id
   ; @param (keyword) content-id
   ; @param (*) content
-  ; @param (map) options
   ;
   ; @usage
-  ; (store-content! :my-transition-controller :xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx [:div "My content"] {...})
-  [controller-id content-id content _]
+  ; (store-content! :my-transition-controller :xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx [:div "My content"])
+  [controller-id content-id content]
   (swap! state/CONTROLLERS update-in [controller-id :content-pool] vector/conj-item [content-id content]))
 
 (defn store-transition-settings!
   ; @ignore
   ;
   ; @description
-  ; Stores the given transition settings.
+  ; Stores the given transition settings of a specific controller.
   ;
   ; @param (keyword) controller-id
-  ; @param (keyword) content-id
-  ; @param (*) content
   ; @param (map) options
-  ; {:transition-duration (ms)(opt)
-  ;  :transition-name (keyword)(opt)}
+  ; {:transition-duration (ms)(opt)}
   ;
   ; @usage
-  ; (store-transition-settings! :my-transition-controller :xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx [:div "My content"] {...})
-  [controller-id _ _ {:keys [transition-duration transition-name]}]
-  (swap! state/CONTROLLERS assoc-in [controller-id :transition-duration] transition-duration)
-  (swap! state/CONTROLLERS assoc-in [controller-id :transition-name]     transition-name))
+  ; (store-transition-settings! :my-transition-controller {...})
+  [controller-id {:keys [transition-duration]}]
+  (swap! state/CONTROLLERS assoc-in [controller-id :transition-duration] transition-duration))
+
+;; ----------------------------------------------------------------------------
+;; ----------------------------------------------------------------------------
 
 (defn activate-content!
   ; @ignore
   ;
   ; @description
-  ; Sets the given content ID as the active content ID.
+  ; Sets the given content ID as the active content ID of a specific controller.
   ;
   ; @param (keyword) controller-id
   ; @param (keyword) content-id
-  ; @param (*) content
-  ; @param (map) options
-  ; {:transition-duration (ms)(opt)
-  ;  :transition-name (keyword)(opt)}
   ;
   ; @usage
-  ; (activate-content! :my-transition-controller :xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx [:div "My content"] {...})
-  [controller-id content-id _ _]
+  ; (activate-content! :my-transition-controller :xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx)
+  [controller-id content-id]
   (swap! state/CONTROLLERS assoc-in [controller-id :active-content-id] content-id))
+
+(defn deactivate-content!
+  ; @ignore
+  ;
+  ; @description
+  ; Clears the active content ID of a specific controller.
+  ;
+  ; @param (keyword) controller-id
+  ;
+  ; @usage
+  ; (deactivate-content! :my-transition-controller)
+  [controller-id]
+  (swap! state/CONTROLLERS dissoc-in [controller-id :active-content-id]))
 
 ;; ----------------------------------------------------------------------------
 ;; ----------------------------------------------------------------------------
@@ -93,8 +101,6 @@
   ; @param (map)(opt) options
   ; {:transition-duration (ms)(opt)
   ;   Default: 0
-  ;  :transition-name (keyword)(opt)
-  ;   E.g., :fade-in
   ;  :rerender-same? (boolean)(opt)
   ;   Default: false}
   ;
@@ -102,7 +108,7 @@
   ; (set-content! :my-transition-controller [:div "My content"])
   ;
   ; @usage
-  ; (set-content! :my-transition-controller [:div "My content"] {:transition-duration 250 :transition-name :fade-in})
+  ; (set-content! :my-transition-controller [:div "My content"] {:transition-duration 250})
   ([controller-id content]
    (set-content! controller-id content {}))
 
@@ -110,11 +116,11 @@
    (let [content-id     (random/generate-keyword)
          active-content (env/get-active-content controller-id)]
         (when (or rerender-same? (not= active-content content))
-              (store-content!             controller-id content-id content options)
-              (store-transition-settings! controller-id content-id content options)
-              (activate-content!          controller-id content-id content options)
+              (store-transition-settings! controller-id options)
+              (store-content!             controller-id content-id content)
+              (activate-content!          controller-id content-id)
               (letfn [(f0 [] (clean-content-pool! controller-id content-id))]
-                     (time/set-timeout! f0 (+ transition-duration 50)))))))
+                     (time/set-timeout! f0 transition-duration))))))
 
 (defn hide-content!
   ; @description
@@ -123,16 +129,19 @@
   ; @param (keyword) controller-id
   ; @param (map)(opt) options
   ; {:transition-duration (ms)(opt)
-  ;  :transition-name (keyword)(opt)
-  ;   E.g., :fade-in}
+  ;   Default: 0}
   ;
   ; @usage
   ; (hide-content! :my-transition-controller)
+  ;
+  ; @usage
+  ; (hide-content! :my-transition-controller {:transition-duration 250})
   ([controller-id]
    (hide-content! controller-id {}))
 
   ([controller-id options]
-   ()))
+   (store-transition-settings! controller-id options)
+   (deactivate-content!        controller-id)))
 
 ;; ----------------------------------------------------------------------------
 ;; ----------------------------------------------------------------------------
