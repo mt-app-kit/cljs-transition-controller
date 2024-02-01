@@ -28,12 +28,12 @@
         transition-duration (env/get-transition-duration controller-id)]
        (letfn [(f0 [[id content]]
                    [:> css-transition {:in            (= id active-content-id)
-                                       :timeout       transition-duration
+                                       :timeout       30000
                                        :classNames    config/CLASS-NAMES
                                        :appear        true
                                        :unmountOnExit true}
                                       (-> content)])]
-              ; [:> transition-group ...]  ; <- Wraps content with an unnecessary DIV.
+              ; [:> transition-group ...] <- Wraps the content with an unnecessary DIV.
               (hiccup/put-with [:<>] content-pool f0 first))))
 
 ;; ----------------------------------------------------------------------------
@@ -51,6 +51,9 @@
                          :reagent-render         (fn [_ _] [transition-controller                controller-id])}))
 
 (defn view
+  ; @note
+  ; The provided options of this component are the default properties of any futher actions.
+  ;
   ; @description
   ; Transition controller component.
   ; Displays the initial content (if any) until the content is overriden by any controller function.
@@ -58,7 +61,9 @@
   ; @param (keyword) controller-id
   ; @param (*)(opt) initial-content
   ; @param (map)(opt) options
-  ; {:transition-duration (ms)(opt)
+  ; {:rerender-same? (boolean)(opt)
+  ;   Default: false
+  ;  :transition-duration (ms)(opt)
   ;   Default: 0}
   ;
   ; @usage

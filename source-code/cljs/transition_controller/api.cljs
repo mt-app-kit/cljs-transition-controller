@@ -14,12 +14,12 @@
 ;
 ; (defn change-content-button
 ;   []
-;   [:button {:on-click #(transition-controller/set-content! :my-transition-controller [:div "Another content"] {:transition-duration 250})}
+;   [:button {:on-click #(transition-controller/set-content! :my-transition-controller [:div "Another content"])}
 ;            "Change content!"])
 ;
 ; (defn hide-content-button
 ;   []
-;   [:button {:on-click #(transition-controller/hide-content! :my-transition-controller {:transition-duration 250})}
+;   [:button {:on-click #(transition-controller/hide-content! :my-transition-controller)}
 ;            "Hide content!"])
 ;
 ; (defn my-ui
@@ -28,6 +28,15 @@
 ;         [hide-content-button]
 ;         [transition-controller/view :my-transition-controller [:div "My initial content"] {:transition-duration 250}]])
 ; @---
+
+
+
+; @tutorial Applied CSS classes
+;
+; @code
+; :tc-appear, :tc-appear-active, :tc-appear-done,
+; :tc-enter,  :tc-enter-active,  :tc-enter-done,
+; :tc-exit,   :tc-exit-active,   :tc-exit-done
 
 ;; ----------------------------------------------------------------------------
 ;; ----------------------------------------------------------------------------

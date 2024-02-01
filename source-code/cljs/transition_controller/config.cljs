@@ -7,7 +7,6 @@
 ; @ignore
 ;
 ; @constant (map)
-(def CLASS-NAMES {:appear :tc-appear  :appearActive :tc-appearing  :appearDone :tc-appeared
-                  :enter  :tc-mount   :enterActive  :tc-mounting   :enterDone  :tc-mounted
-                  :exit   :tc-unmount :exitActive   :tc-unmounting :exitDone   :tc-unmounted})
-                  
+(def CLASS-NAMES {:appear :tc-appear :appearActive :tc-appear-active :appearDone :tc-appear-done
+                  :enter  :tc-enter  :enterActive  :tc-enter-active  :enterDone  :tc-enter-done
+                  :exit   :tc-exit   :exitActive   :tc-exit-active   :exitDone   :tc-exit-done})

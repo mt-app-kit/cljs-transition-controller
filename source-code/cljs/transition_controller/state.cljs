@@ -13,6 +13,5 @@
 ;    :content-pool (vector)
 ;     [(keyword) content-id
 ;      (*) content]
-;    :transition-duration (ms)
-;    :transition-name (keyword)}}
+;    ...}}
 (def CONTROLLERS (ratom {}))

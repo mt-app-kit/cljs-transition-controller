@@ -54,6 +54,20 @@
 ;; ----------------------------------------------------------------------------
 ;; ----------------------------------------------------------------------------
 
+(defn rerender-same-content?
+  ; @ignore
+  ;
+  ; @param (keyword) controller-id
+  ;
+  ; @usage
+  ; (rerender-same-content? :my-transition-controller)
+  ; =>
+  ; true
+  ;
+  ; @return (boolean)
+  [controller-id]
+  (get-in @state/CONTROLLERS [controller-id :rerender-same?]))
+
 (defn get-transition-duration
   ; @ignore
   ;
