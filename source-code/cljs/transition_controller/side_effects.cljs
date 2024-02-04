@@ -56,18 +56,19 @@
   [controller-id content-id]
   (swap! state/CONTROLLERS assoc-in [controller-id :active-content-id] content-id))
 
-(defn deactivate-content!
+(defn set-content-visibility!
   ; @ignore
   ;
   ; @description
-  ; Clears the active content ID of a specific controller.
+  ; Sets the content visibility of a specific controller.
   ;
   ; @param (keyword) controller-id
+  ; @param (boolean) visible?
   ;
   ; @usage
-  ; (deactivate-content! :my-transition-controller)
-  [controller-id]
-  (swap! state/CONTROLLERS dissoc-in [controller-id :active-content-id]))
+  ; (set-content-visibility! :my-transition-controller)
+  [controller-id visible?]
+  (swap! state/CONTROLLERS assoc-in [controller-id :content-visible?] visible?))
 
 ;; ----------------------------------------------------------------------------
 ;; ----------------------------------------------------------------------------
@@ -107,10 +108,22 @@
         transition-duration    (env/get-transition-duration controller-id)
         rerender-same-content? (env/rerender-same-content?  controller-id)]
        (when (or rerender-same-content? (not= active-content content))
-             (store-content!    controller-id content-id content)
-             (activate-content! controller-id content-id)
+             (store-content!          controller-id content-id content)
+             (activate-content!       controller-id content-id)
+             (set-content-visibility! controller-id true)
              (letfn [(f0 [] (clear-former-contents! controller-id content-id))]
                     (time/set-timeout! f0 transition-duration)))))
+
+(defn show-content!
+  ; @description
+  ; Shows the content of a specific transition controller.
+  ;
+  ; @param (keyword) controller-id
+  ;
+  ; @usage
+  ; (show-content! :my-transition-controller)
+  [controller-id]
+  (set-content-visibility! controller-id true))
 
 (defn hide-content!
   ; @description
@@ -121,7 +134,7 @@
   ; @usage
   ; (hide-content! :my-transition-controller)
   [controller-id]
-  (deactivate-content! controller-id))
+  (set-content-visibility! controller-id false))
 
 ;; ----------------------------------------------------------------------------
 ;; ----------------------------------------------------------------------------

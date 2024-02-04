@@ -9,6 +9,9 @@
 (defn get-content-pool
   ; @ignore
   ;
+  ; @description
+  ; Returns the content pool of a specific controller.
+  ;
   ; @param (keyword) controller-id
   ;
   ; @usage
@@ -22,6 +25,9 @@
 
 (defn get-active-content-id
   ; @ignore
+  ;
+  ; @description
+  ; Returns the ID of the active content of a specific controller.
   ;
   ; @param (keyword) controller-id
   ;
@@ -37,6 +43,9 @@
 (defn get-active-content
   ; @ignore
   ;
+  ; @description
+  ; Returns the active content of a specific controller.
+  ;
   ; @param (keyword) controller-id
   ;
   ; @usage
@@ -51,11 +60,31 @@
                (letfn [(f0 [%] (-> % first (= active-content-id)))]
                       (second (vector/first-match content-pool f0))))))
 
+(defn content-visible?
+  ; @ignore
+  ;
+  ; @description
+  ; Returns the content visibility of a specific controller.
+  ;
+  ; @param (keyword) controller-id
+  ;
+  ; @usage
+  ; (content-visible? :my-transition-controller)
+  ; =>
+  ; true
+  ;
+  ; @return (boolean)
+  [controller-id]
+  (get-in @state/CONTROLLERS [controller-id :content-visible?]))
+
 ;; ----------------------------------------------------------------------------
 ;; ----------------------------------------------------------------------------
 
 (defn rerender-same-content?
   ; @ignore
+  ;
+  ; @description
+  ; Returns TRUE if the value of the ':rerender-same?' option of a specific controller is TRUE.
   ;
   ; @param (keyword) controller-id
   ;
@@ -70,6 +99,9 @@
 
 (defn get-transition-duration
   ; @ignore
+  ;
+  ; @description
+  ; Returns the transition duration of a specific controller.
   ;
   ; @param (keyword) controller-id
   ;

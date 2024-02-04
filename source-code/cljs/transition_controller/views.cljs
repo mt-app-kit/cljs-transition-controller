@@ -25,10 +25,11 @@
   [controller-id]
   (let [content-pool        (env/get-content-pool        controller-id)
         active-content-id   (env/get-active-content-id   controller-id)
+        content-visible?    (env/content-visible?        controller-id)
         transition-duration (env/get-transition-duration controller-id)]
        (letfn [(f0 [[id content]]
-                   [:> css-transition {:in            (= id active-content-id)
-                                       :timeout       30000
+                   [:> css-transition {:in            (and content-visible? (= id active-content-id))
+                                       :timeout       transition-duration
                                        :classNames    config/CLASS-NAMES
                                        :appear        true
                                        :unmountOnExit true}
