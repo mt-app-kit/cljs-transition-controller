@@ -5,7 +5,8 @@
               [fruits.random.api :as random]
               [fruits.vector.api :as vector]
               [fruits.map.api :as map :refer [dissoc-in]]
-              [time.api :as time]))
+              [time.api :as time]
+              [reagent.api :as reagent]))
 
 ;; ----------------------------------------------------------------------------
 ;; ----------------------------------------------------------------------------
@@ -24,23 +25,6 @@
   ; (store-content! :my-transition-controller :xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx [:div "My content"])
   [controller-id content-id content]
   (swap! state/CONTROLLERS update-in [controller-id :content-pool] vector/conj-item [content-id content]))
-
-(defn store-options!
-  ; @ignore
-  ;
-  ; @description
-  ; Stores the given options of a specific controller.
-  ;
-  ; @param (keyword) controller-id
-  ; @param (map) options
-  ;
-  ; @usage
-  ; (store-options! :my-transition-controller {...})
-  [controller-id options]
-  (swap! state/CONTROLLERS update controller-id map/merge-some options))
-
-;; ----------------------------------------------------------------------------
-;; ----------------------------------------------------------------------------
 
 (defn activate-content!
   ; @ignore
@@ -73,6 +57,24 @@
 ;; ----------------------------------------------------------------------------
 ;; ----------------------------------------------------------------------------
 
+(defn store-controller-settings!
+  ; @ignore
+  ;
+  ; @description
+  ; Stores the settings of a specific controller (in the controller state atom)
+  ; that are provided as view component parameters and required by the controller functions.
+  ;
+  ; @param (keyword) controller-id
+  ; @param (map) controller-props
+  ; {:rerender-same? (boolean)(opt)
+  ;  :transition-duration (ms)(opt)}
+  ;
+  ; @usage
+  ; (store-controller-settings! :my-transition-controller {...})
+  [controller-id {:keys [rerender-same? transition-duration]}]
+  (swap! state/CONTROLLERS update controller-id merge {:rerender-same?      rerender-same?
+                                                       :transition-duration transition-duration}))
+
 (defn clear-former-contents!
   ; @ignore
   ;
@@ -85,10 +87,24 @@
   ; @usage
   ; (clear-former-contents! :my-transition-controller :xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx)
   [controller-id content-id]
-  (let [active-content-id (env/get-active-content-id controller-id)]
+  (let [active-content-id (env/get-controller-state controller-id :active-content-id)]
        (when (= content-id active-content-id)
              (swap! state/CONTROLLERS update-in [controller-id :content-pool]       vector/keep-last-item)
              (swap! state/CONTROLLERS update-in [controller-id :content-lifecycles] map/keep-key content-id))))
+
+(defn clear-controller-state!
+  ; @ignore
+  ;
+  ; @description
+  ; Clears the state of a specific controller.
+  ;
+  ; @param (keyword) controller-id
+  ; @param (map) controller-props
+  ;
+  ; @usage
+  ; (clear-controller-state! :my-transition-controller {...})
+  [controller-id _]
+  (swap! state/CONTROLLERS dissoc controller-id))
 
 ;; ----------------------------------------------------------------------------
 ;; ----------------------------------------------------------------------------
@@ -103,11 +119,11 @@
   ; @usage
   ; (set-content! :my-transition-controller [:div "My content"])
   [controller-id content]
-  (let [content-id             (random/generate-keyword)
-        active-content         (env/get-active-content      controller-id)
-        transition-duration    (env/get-transition-duration controller-id)
-        rerender-same-content? (env/rerender-same-content?  controller-id)]
-       (when (or rerender-same-content? (not= active-content content))
+  (let [content-id          (random/generate-keyword)
+        active-content      (env/get-active-content   controller-id)
+        transition-duration (env/get-controller-state controller-id :transition-duration)
+        rerender-same?      (env/get-controller-state controller-id :rerender-same?)]
+       (when (or rerender-same? (not= active-content content))
              (store-content!          controller-id content-id content)
              (activate-content!       controller-id content-id)
              (set-content-visibility! controller-id true)
@@ -139,31 +155,38 @@
 ;; ----------------------------------------------------------------------------
 ;; ----------------------------------------------------------------------------
 
-(defn init-controller-state!
+(defn controller-did-mount
   ; @ignore
   ;
-  ; @description
-  ; Initializes the controller state for a specific controller.
-  ;
   ; @param (keyword) controller-id
-  ; @param (*) initial-content
-  ; @param (map) options
+  ; @param (map) controller-props
+  ; {:initial-content (*)(opt)}
   ;
   ; @usage
-  ; (init-controller-state! :my-transition-controller [:div "My content"] {...})
-  [controller-id initial-content options]
-  (store-options! controller-id options)
+  ; (controller-did-mount :my-transition-controller {...})
+  [controller-id {:keys [initial-content] :as controller-props}]
+  (store-controller-settings! controller-id controller-props)
   (if initial-content (set-content! controller-id initial-content)))
 
-(defn clear-controller-state!
+(defn controller-did-update
   ; @ignore
   ;
-  ; @description
-  ; Clears the controller state of a specific controller.
-  ;
   ; @param (keyword) controller-id
+  ; @param (map) controller-props
   ;
   ; @usage
-  ; (clear-controller-state! :my-transition-controller)
-  [controller-id]
-  (swap! state/CONTROLLERS dissoc controller-id))
+  ; (controller-did-update :my-transition-controller {...})
+  [controller-id _ %]
+  (let [[_ controller-props] (reagent/arguments %)]
+       (store-controller-settings! controller-id controller-props)))
+
+(defn controller-will-unmount
+  ; @ignore
+  ;
+  ; @param (keyword) controller-id
+  ; @param (map) controller-props
+  ;
+  ; @usage
+  ; (controller-will-unmount :my-transition-controller {...})
+  [controller-id controller-props]
+  (clear-controller-state! controller-id controller-props))

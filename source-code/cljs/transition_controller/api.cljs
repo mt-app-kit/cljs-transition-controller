@@ -17,6 +17,11 @@
 ;   [:button {:on-click #(transition-controller/set-content! :my-transition-controller [:div "Another content"])}
 ;            "Change content!"])
 ;
+; (defn show-content-button
+;   []
+;   [:button {:on-click #(transition-controller/show-content! :my-transition-controller)}
+;            "Show content!"])
+;
 ; (defn hide-content-button
 ;   []
 ;   [:button {:on-click #(transition-controller/hide-content! :my-transition-controller)}
@@ -43,6 +48,7 @@
 
 ; @redirect (transition-controller.side-effects/*)
 (def set-content!  side-effects/set-content!)
+(def show-content! side-effects/show-content!)
 (def hide-content! side-effects/hide-content!)
 
 ; @redirect (transition-controller.views/*)

@@ -1,11 +1,12 @@
 
 (ns transition-controller.views
-    (:require [reagent.core :as reagent]
+    (:require [reagent.api :as reagent]
               [transition-controller.side-effects :as side-effects]
               [transition-controller.env :as env]
               [transition-controller.config :as config]
               [react-transition-group]
-              [fruits.hiccup.api :as hiccup]))
+              [fruits.hiccup.api :as hiccup]
+              [fruits.random.api :as random]))
 
 ;; ----------------------------------------------------------------------------
 ;; ----------------------------------------------------------------------------
@@ -22,11 +23,13 @@
   ; @ignore
   ;
   ; @param (keyword) controller-id
-  [controller-id]
-  (let [content-pool        (env/get-content-pool        controller-id)
-        active-content-id   (env/get-active-content-id   controller-id)
-        content-visible?    (env/content-visible?        controller-id)
-        transition-duration (env/get-transition-duration controller-id)]
+  ; @param (map) controller-props
+  ; {:transition-duration (ms)(opt)
+  ;   Default: 0}
+  [controller-id {:keys [transition-duration] :or {transition-duration 0}}]
+  (let [active-content-id (env/get-controller-state controller-id :active-content-id)
+        content-pool      (env/get-controller-state controller-id :content-pool)
+        content-visible?  (env/get-controller-state controller-id :content-visible?)]
        (letfn [(f0 [[id content]]
                    [:> css-transition {:in            (and content-visible? (= id active-content-id))
                                        :timeout       transition-duration
@@ -35,7 +38,9 @@
                                        :unmountOnExit true}
                                       (-> content)])]
               ; [:> transition-group ...] <- Wraps the content with an unnecessary DIV.
-              (hiccup/put-with [:<>] content-pool f0 first))))
+            [:div
+              (hiccup/put-with [:<>] content-pool f0 first)
+              (str content-pool)])))
 
 ;; ----------------------------------------------------------------------------
 ;; ----------------------------------------------------------------------------
@@ -44,42 +49,36 @@
   ; @ignore
   ;
   ; @param (keyword) controller-id
-  ; @param (*) initial-content
-  ; @param (map) options
-  [controller-id initial-content options]
-  (reagent/create-class {:component-did-mount    (fn [_ _] (side-effects/init-controller-state!  controller-id initial-content options))
-                         :component-will-unmount (fn [_ _] (side-effects/clear-controller-state! controller-id))
-                         :reagent-render         (fn [_ _] [transition-controller                controller-id])}))
+  ; @param (map) controller-props
+  [controller-id controller-props]
+  (reagent/lifecycles {:component-did-mount    (fn [_ _] (side-effects/controller-did-mount    controller-id controller-props))
+                       :component-will-unmount (fn [_ _] (side-effects/controller-will-unmount controller-id controller-props))
+                       :component-did-update   (fn [%]   (side-effects/controller-did-update   controller-id controller-props %))
+                       :reagent-render         (fn [_ _] [transition-controller                controller-id controller-props])}))
 
 (defn view
-  ; @note
-  ; The provided options of this component are the default properties of any futher actions.
-  ;
   ; @description
   ; Transition controller component.
-  ; Displays the initial content (if any) until the content is overriden by any controller function.
+  ; Displays the initial content (if any) until the content is overriden by a controller function.
   ;
-  ; @param (keyword) controller-id
-  ; @param (*)(opt) initial-content
-  ; @param (map)(opt) options
-  ; {:rerender-same? (boolean)(opt)
+  ; @param (keyword)(opt) controller-id
+  ; @param (map) controller-props
+  ; {:initial-content (*)(opt)
+  ;  :rerender-same? (boolean)(opt)
   ;   Default: false
   ;  :transition-duration (ms)(opt)
   ;   Default: 0}
   ;
   ; @usage
-  ; [view :my-transition-controller]
+  ; [view {...}]
   ;
   ; @usage
-  ; [view :my-transition-controller [:div "My initial content"]]
+  ; [view :my-transition-controller {...}]
   ;
   ; @usage
-  ; [view :my-transition-controller [:div "My initial content"] {:transition-duration 250}]
-  ([controller-id]
-   [view controller-id nil])
+  ; [view :my-transition-controller {:initial-content [:div "My content"] :transition-duration 250}]
+  ([controller-props]
+   [view (random/generate-keyword) controller-props])
 
-  ([controller-id initial-content]
-   [view controller-id initial-content {}])
-
-  ([controller-id initial-content options]
-   [view-lifecycles controller-id initial-content options]))
+  ([controller-id controller-props]
+   [view-lifecycles controller-id controller-props]))

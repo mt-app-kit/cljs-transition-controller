@@ -1,6 +1,6 @@
 
 (ns transition-controller.state
-    (:require [reagent.core :refer [atom] :rename {atom ratom}]))
+    (:require [reagent.api :refer [ratom]]))
 
 ;; ----------------------------------------------------------------------------
 ;; ----------------------------------------------------------------------------
