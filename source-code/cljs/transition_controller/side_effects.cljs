@@ -1,12 +1,12 @@
 
 (ns transition-controller.side-effects
-    (:require [transition-controller.state :as state]
+    (:require [fruits.map.api              :as map :refer [dissoc-in]]
+              [fruits.random.api           :as random]
+              [fruits.vector.api           :as vector]
+              [reagent.api                 :as reagent]
+              [time.api                    :as time]
               [transition-controller.env   :as env]
-              [fruits.random.api :as random]
-              [fruits.vector.api :as vector]
-              [fruits.map.api :as map :refer [dissoc-in]]
-              [time.api :as time]
-              [reagent.api :as reagent]))
+              [transition-controller.state :as state]))
 
 ;; ----------------------------------------------------------------------------
 ;; ----------------------------------------------------------------------------
@@ -15,7 +15,7 @@
   ; @ignore
   ;
   ; @description
-  ; Stores the given content in the content pool of a specific controller.
+  ; Stores the given content in the content pool of the controller.
   ;
   ; @param (keyword) controller-id
   ; @param (keyword) content-id
@@ -30,7 +30,7 @@
   ; @ignore
   ;
   ; @description
-  ; Sets the given content ID as the active content ID of a specific controller.
+  ; Sets the given content ID as the active content ID of the controller.
   ;
   ; @param (keyword) controller-id
   ; @param (keyword) content-id
@@ -44,7 +44,7 @@
   ; @ignore
   ;
   ; @description
-  ; Sets the content visibility of a specific controller.
+  ; Sets the content visibility of the controller.
   ;
   ; @param (keyword) controller-id
   ; @param (boolean) visible?
@@ -57,11 +57,25 @@
 ;; ----------------------------------------------------------------------------
 ;; ----------------------------------------------------------------------------
 
+(defn mark-controller-as-mounted!
+  ; @ignore
+  ;
+  ; @description
+  ; Marks the controller as mounted (in the controller state atom).
+  ;
+  ; @param (keyword) controller-id
+  ; @param (map) controller-props
+  ;
+  ; @usage
+  ; (mark-controller-as-mounted! :my-transition-controller {...})
+  [controller-id _]
+  (swap! state/CONTROLLERS update controller-id assoc :mounted? true))
+
 (defn store-controller-settings!
   ; @ignore
   ;
   ; @description
-  ; Stores the settings of a specific controller (in the controller state atom)
+  ; Stores the settings of the controller (in the controller state atom)
   ; that are provided as view component parameters and required by the controller functions.
   ;
   ; @param (keyword) controller-id
@@ -79,7 +93,7 @@
   ; @ignore
   ;
   ; @description
-  ; Removes former contents from the content pool of a specific controller (if not changed since the given content ID has been set).
+  ; Removes former contents from the content pool of the controller (if not changed since the given content ID has been set).
   ;
   ; @param (keyword) controller-id
   ; @param (keyword) content-id
@@ -96,7 +110,7 @@
   ; @ignore
   ;
   ; @description
-  ; Clears the state of a specific controller.
+  ; Clears the state of the controller.
   ;
   ; @param (keyword) controller-id
   ; @param (map) controller-props
@@ -111,7 +125,7 @@
 
 (defn set-content!
   ; @description
-  ; Sets the content of a specific transition controller.
+  ; Sets the content of the controller.
   ;
   ; @param (keyword) controller-id
   ; @param (*) content
@@ -132,7 +146,7 @@
 
 (defn show-content!
   ; @description
-  ; Shows the content of a specific transition controller.
+  ; Shows the content of the controller.
   ;
   ; @param (keyword) controller-id
   ;
@@ -143,7 +157,7 @@
 
 (defn hide-content!
   ; @description
-  ; Hides the content of a specific transition controller.
+  ; Hides the content of the controller.
   ;
   ; @param (keyword) controller-id
   ;
@@ -165,7 +179,8 @@
   ; @usage
   ; (controller-did-mount :my-transition-controller {...})
   [controller-id {:keys [initial-content] :as controller-props}]
-  (store-controller-settings! controller-id controller-props)
+  (mark-controller-as-mounted! controller-id controller-props)
+  (store-controller-settings!  controller-id controller-props)
   (if initial-content (set-content! controller-id initial-content)))
 
 (defn controller-did-update

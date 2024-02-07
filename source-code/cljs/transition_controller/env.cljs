@@ -1,7 +1,7 @@
 
 (ns transition-controller.env
-    (:require [transition-controller.state :as state]
-              [fruits.vector.api :as vector]))
+    (:require [fruits.vector.api           :as vector]
+              [transition-controller.state :as state]))
 
 ;; ----------------------------------------------------------------------------
 ;; ----------------------------------------------------------------------------
@@ -10,7 +10,7 @@
   ; @ignore
   ;
   ; @description
-  ; Returns the stored state of a specific controller (optionally filtered to a specific key).
+  ; Returns the stored state of the controller (optionally filtered to a specific key).
   ;
   ; @param (keyword) controller-id
   ; @param (keyword)(opt) item-key
@@ -38,7 +38,7 @@
   ; @ignore
   ;
   ; @description
-  ; Returns the active content of a specific controller.
+  ; Returns the active content of the controller.
   ;
   ; @param (keyword) controller-id
   ;
@@ -53,3 +53,21 @@
           (let [content-pool (get-controller-state controller-id :content-pool)]
                (letfn [(f0 [%] (-> % first (= active-content-id)))]
                       (second (vector/first-match content-pool f0))))))
+
+;; ----------------------------------------------------------------------------
+;; ----------------------------------------------------------------------------
+
+(defn controller-mounted?
+  ; @description
+  ; Returns TRUE if the controller is mounted.
+  ;
+  ; @param (keyword) controller-id
+  ;
+  ; @usage
+  ; (controller-mounted? :my-transition-controller)
+  ; =>
+  ; true
+  ;
+  ; @return (boolean)
+  [controller-id]
+  (get-controller-state controller-id :mounted?))

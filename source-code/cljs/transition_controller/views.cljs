@@ -1,12 +1,12 @@
 
 (ns transition-controller.views
-    (:require [reagent.api :as reagent]
-              [transition-controller.side-effects :as side-effects]
-              [transition-controller.env :as env]
-              [transition-controller.config :as config]
-              [react-transition-group]
-              [fruits.hiccup.api :as hiccup]
-              [fruits.random.api :as random]))
+    (:require [react-transition-group]
+              [fruits.hiccup.api                  :as hiccup]
+              [fruits.random.api                  :as random]
+              [reagent.api                        :as reagent]
+              [transition-controller.config       :as config]
+              [transition-controller.env          :as env]
+              [transition-controller.side-effects :as side-effects]))
 
 ;; ----------------------------------------------------------------------------
 ;; ----------------------------------------------------------------------------
@@ -38,9 +38,7 @@
                                        :unmountOnExit true}
                                       (-> content)])]
               ; [:> transition-group ...] <- Wraps the content with an unnecessary DIV.
-            [:div
-              (hiccup/put-with [:<>] content-pool f0 first)
-              (str content-pool)])))
+              (hiccup/put-with [:<>] content-pool f0 first))))
 
 ;; ----------------------------------------------------------------------------
 ;; ----------------------------------------------------------------------------

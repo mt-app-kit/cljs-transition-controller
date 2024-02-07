@@ -8,7 +8,7 @@
 ; @ignore
 ;
 ; @atom (map)
-; {:my-controller (map)
+; {:my-transition-controller (map)
 ;   {:active-content-id (keyword)
 ;    :content-pool (vector)
 ;     [(keyword) content-id

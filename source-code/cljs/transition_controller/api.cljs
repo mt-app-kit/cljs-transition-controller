@@ -1,7 +1,8 @@
 
 (ns transition-controller.api
-    (:require [transition-controller.views :as views]
-              [transition-controller.side-effects :as side-effects]))
+    (:require [transition-controller.env          :as env]
+              [transition-controller.side-effects :as side-effects]
+              [transition-controller.views        :as views]))
 
 ;; ----------------------------------------------------------------------------
 ;; ----------------------------------------------------------------------------
@@ -45,6 +46,9 @@
 
 ;; ----------------------------------------------------------------------------
 ;; ----------------------------------------------------------------------------
+
+; @redirect (transition-controller.env/*)
+(def controller-mounted? env/controller-mounted?)
 
 ; @redirect (transition-controller.side-effects/*)
 (def set-content!  side-effects/set-content!)
