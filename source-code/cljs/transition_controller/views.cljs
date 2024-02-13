@@ -57,7 +57,7 @@
 (defn view
   ; @description
   ; Transition controller component.
-  ; Displays the initial content (if any) until the content is overriden by a controller function.
+  ; Displays the initial content (if any) until the content is overriden by the 'set-content!' function.
   ;
   ; @param (keyword)(opt) controller-id
   ; @param (map) controller-props

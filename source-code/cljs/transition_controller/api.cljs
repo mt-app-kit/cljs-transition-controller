@@ -9,7 +9,7 @@
 
 ; @tutorial Demo
 ;
-; @code Usage
+; @usage
 ; (ns my-namespace
 ;     (:require [transition-controller.api :as transition-controller]))
 ;
@@ -33,14 +33,12 @@
 ;   [:div [change-content-button]
 ;         [hide-content-button]
 ;         [transition-controller/view :my-transition-controller [:div "My initial content"] {:transition-duration 250}]])
-; @---
 
 ;; ----------------------------------------------------------------------------
 ;; ----------------------------------------------------------------------------
 
 ; @tutorial Applied CSS classes
 ;
-; @code
 ; :tc-appear, :tc-appear-active, :tc-appear-done,
 ; :tc-enter,  :tc-enter-active,  :tc-enter-done,
 ; :tc-exit,   :tc-exit-active,   :tc-exit-done
