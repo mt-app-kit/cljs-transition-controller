@@ -1,6 +1,6 @@
 
 (ns transition-controller.state
-    (:require [reagent.api :refer [ratom]]))
+    (:require [reagent.core :as reagent]))
 
 ;; ----------------------------------------------------------------------------
 ;; ----------------------------------------------------------------------------
@@ -14,4 +14,4 @@
 ;     [(keyword) content-id
 ;      (*) content]
 ;    ...}}
-(def CONTROLLERS (ratom {}))
+(def CONTROLLERS (reagent/atom {}))

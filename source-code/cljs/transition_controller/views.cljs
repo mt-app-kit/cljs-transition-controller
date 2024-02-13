@@ -3,7 +3,7 @@
     (:require [react-transition-group]
               [fruits.hiccup.api                  :as hiccup]
               [fruits.random.api                  :as random]
-              [reagent.api                        :as reagent]
+              [reagent.core :as reagent]
               [transition-controller.config       :as config]
               [transition-controller.env          :as env]
               [transition-controller.side-effects :as side-effects]))
@@ -49,10 +49,10 @@
   ; @param (keyword) controller-id
   ; @param (map) controller-props
   [controller-id controller-props]
-  (reagent/lifecycles {:component-did-mount    (fn [_ _] (side-effects/controller-did-mount    controller-id controller-props))
-                       :component-will-unmount (fn [_ _] (side-effects/controller-will-unmount controller-id controller-props))
-                       :component-did-update   (fn [%]   (side-effects/controller-did-update   controller-id controller-props %))
-                       :reagent-render         (fn [_ _] [transition-controller                controller-id controller-props])}))
+  (reagent/create-class {:component-did-mount    (fn [_ _] (side-effects/controller-did-mount    controller-id controller-props))
+                         :component-will-unmount (fn [_ _] (side-effects/controller-will-unmount controller-id controller-props))
+                         :component-did-update   (fn [%]   (side-effects/controller-did-update   controller-id controller-props %))
+                         :reagent-render         (fn [_ _] [transition-controller                controller-id controller-props])}))
 
 (defn view
   ; @description

@@ -3,7 +3,7 @@
     (:require [fruits.map.api              :as map :refer [dissoc-in]]
               [fruits.random.api           :as random]
               [fruits.vector.api           :as vector]
-              [reagent.api                 :as reagent]
+              [reagent.tools.api :as reagent.tools]
               [time.api                    :as time]
               [transition-controller.env   :as env]
               [transition-controller.state :as state]))
@@ -192,7 +192,7 @@
   ; @usage
   ; (controller-did-update :my-transition-controller {...})
   [controller-id _ %]
-  (let [[_ controller-props] (reagent/arguments %)]
+  (let [[_ controller-props] (reagent.tools/arguments %)]
        (store-controller-settings! controller-id controller-props)))
 
 (defn controller-will-unmount
