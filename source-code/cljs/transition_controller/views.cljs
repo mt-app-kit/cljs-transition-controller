@@ -25,7 +25,8 @@
   ; @param (keyword) controller-id
   ; @param (map) controller-props
   ; {:transition-duration (ms)(opt)
-  ;   Default: 0}
+  ;   Default: 0
+  ;  ...}
   [controller-id {:keys [transition-duration] :or {transition-duration 0}}]
   (let [active-content-id (env/get-controller-state controller-id :active-content-id)
         content-pool      (env/get-controller-state controller-id :content-pool)

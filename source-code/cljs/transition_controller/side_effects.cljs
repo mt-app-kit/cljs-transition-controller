@@ -61,7 +61,7 @@
   ; @ignore
   ;
   ; @description
-  ; Marks the controller as mounted (in the controller state atom).
+  ; Marks the controller as mounted (in the 'CONTROLLERS' atom).
   ;
   ; @param (keyword) controller-id
   ; @param (map) controller-props
@@ -75,13 +75,14 @@
   ; @ignore
   ;
   ; @description
-  ; Stores the settings of the controller (in the controller state atom)
+  ; Stores the settings of the controller (in the 'CONTROLLERS' atom)
   ; that are provided as view component parameters and required by the controller functions.
   ;
   ; @param (keyword) controller-id
   ; @param (map) controller-props
   ; {:rerender-same? (boolean)(opt)
-  ;  :transition-duration (ms)(opt)}
+  ;  :transition-duration (ms)(opt)
+  ;  ...}
   ;
   ; @usage
   ; (store-controller-settings! :my-transition-controller {...})
