@@ -12,6 +12,6 @@
 ;   {:active-content-id (keyword)
 ;    :content-pool (vector)
 ;     [(keyword) content-id
-;      (*) content]
+;      (hiccup or Reagent component) content]
 ;    ...}}
 (def CONTROLLERS (reagent/atom {}))

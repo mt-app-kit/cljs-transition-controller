@@ -19,7 +19,7 @@
   ;
   ; @param (keyword) controller-id
   ; @param (keyword) content-id
-  ; @param (*) content
+  ; @param (hiccup or Reagent component) content
   ;
   ; @usage
   ; (store-content! :my-transition-controller :xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx [:div "My content"])
@@ -129,7 +129,7 @@
   ; Sets the content of the controller.
   ;
   ; @param (keyword) controller-id
-  ; @param (*) content
+  ; @param (hiccup or Reagent component) content
   ;
   ; @usage
   ; (set-content! :my-transition-controller [:div "My content"])
@@ -175,7 +175,7 @@
   ;
   ; @param (keyword) controller-id
   ; @param (map) controller-props
-  ; {:initial-content (*)(opt)}
+  ; {:initial-content (hiccup or Reagent component)(opt)}
   ;
   ; @usage
   ; (controller-did-mount :my-transition-controller {...})

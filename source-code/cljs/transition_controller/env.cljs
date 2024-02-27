@@ -47,7 +47,7 @@
   ; =>
   ; [:div "My content"]
   ;
-  ; @return (*)
+  ; @return (hiccup or Reagent component)
   [controller-id]
   (if-let [active-content-id (get-controller-state controller-id :active-content-id)]
           (let [content-pool (get-controller-state controller-id :content-pool)]

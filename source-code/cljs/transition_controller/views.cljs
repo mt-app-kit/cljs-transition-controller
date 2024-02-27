@@ -38,7 +38,7 @@
                                        :appear        true
                                        :unmountOnExit true}
                                       (-> content)])]
-              ; [:> transition-group ...] <- Wraps the content with an unnecessary DIV.
+              ; [:> transition-group ...] <- Wrapped the content with an unnecessary DIV.
               (hiccup/put-with [:<>] content-pool f0 first))))
 
 ;; ----------------------------------------------------------------------------
@@ -62,7 +62,7 @@
   ;
   ; @param (keyword)(opt) controller-id
   ; @param (map) controller-props
-  ; {:initial-content (*)(opt)
+  ; {:initial-content (hiccup or Reagent component)(opt)
   ;  :rerender-same? (boolean)(opt)
   ;   Default: false
   ;  :transition-duration (ms)(opt)
