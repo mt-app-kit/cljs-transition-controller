@@ -3,7 +3,7 @@
     (:require [react-transition-group]
               [fruits.hiccup.api                  :as hiccup]
               [fruits.random.api                  :as random]
-              [reagent.core :as reagent]
+              [reagent.core                       :as reagent]
               [transition-controller.config       :as config]
               [transition-controller.env          :as env]
               [transition-controller.side-effects :as side-effects]))

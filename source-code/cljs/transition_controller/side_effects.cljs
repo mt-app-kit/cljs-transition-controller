@@ -3,7 +3,7 @@
     (:require [fruits.map.api              :as map :refer [dissoc-in]]
               [fruits.random.api           :as random]
               [fruits.vector.api           :as vector]
-              [reagent.tools.api :as reagent.tools]
+              [reagent.tools.api           :as reagent.tools]
               [time.api                    :as time]
               [transition-controller.env   :as env]
               [transition-controller.state :as state]))
