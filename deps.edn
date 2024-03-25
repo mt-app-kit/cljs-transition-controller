@@ -5,6 +5,6 @@
          mt-utilities/cljc-fruits    {:git/url "https://github.com/mt-utilities/cljc-fruits"
                                       :sha     "36151385c9a31777a1da9655d4ad56741abfc720"}
          mt-utilities/cljc-time      {:git/url "https://github.com/mt-utilities/cljc-time"
-                                      :sha     "46082e5ba96db821e2027e3a5d1dfbc3ae445705"}
+                                      :sha     "8db2176097de29ad68b26d5da1d6a90996f8dd42"}
          org.clojure/clojurescript   {:mvn/version "1.10.891"}
          reagent/reagent             {:mvn/version "1.2.0"}}}

@@ -32,7 +32,7 @@
 ;   []
 ;   [:div [change-content-button]
 ;         [hide-content-button]
-;         [transition-controller/view :my-transition-controller [:div "My initial content"] {:transition-duration 250}]])
+;         [transition-controller/view :my-transition-controller {:initial-content [:div "My initial content"]  :transition-duration 250}]])
 
 ;; ----------------------------------------------------------------------------
 ;; ----------------------------------------------------------------------------
