@@ -3,8 +3,8 @@
  :deps  {mt-extensions/reagent-utils {:git/url "https://github.com/mt-extensions/reagent-utils"
                                       :sha     "0527ffbf5a08305dfd4376a78c007f53c1a311b2"}
          bithandshake/cljc-fruits    {:git/url "https://github.com/bithandshake/cljc-fruits"
-                                      :sha     "289bfaa76c90632b4332e89a226eb657e7eb4107"}
+                                      :sha     "fcd4ebfed6cc44486464b5d619bef88d620c7f6a"}
          mt-utilities/cljc-time      {:git/url "https://github.com/mt-utilities/cljc-time"
-                                      :sha     "880512f25278823fb72bb1fe96036be32573a83a"}
+                                      :sha     "798bb57c5d0d421618bcef7071d49580e16b61aa"}
          org.clojure/clojurescript   {:mvn/version "1.10.891"}
          reagent/reagent             {:mvn/version "1.2.0"}}}
