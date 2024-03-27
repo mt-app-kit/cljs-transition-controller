@@ -1,10 +1,10 @@
 
 {:paths ["source-code/cljs"]
  :deps  {mt-extensions/reagent-utils {:git/url "https://github.com/mt-extensions/reagent-utils"
-                                      :sha     "36151385c9a31777a1da9655d4ad56741abfc720"}
+                                      :sha     "42b62107e876c0779b9c30ec2d5489fb74303801"}
          bithandshake/cljc-fruits    {:git/url "https://github.com/bithandshake/cljc-fruits"
-                                      :sha     "36151385c9a31777a1da9655d4ad56741abfc720"}
+                                      :sha     "42b62107e876c0779b9c30ec2d5489fb74303801"}
          mt-utilities/cljc-time      {:git/url "https://github.com/mt-utilities/cljc-time"
-                                      :sha     "8e980a3e9efe154ffedf8d6b896e214e50d7db92"}
+                                      :sha     "a57a6124646b726abcdd98e4e9fd9c10dd2edc33"}
          org.clojure/clojurescript   {:mvn/version "1.10.891"}
          reagent/reagent             {:mvn/version "1.2.0"}}}
