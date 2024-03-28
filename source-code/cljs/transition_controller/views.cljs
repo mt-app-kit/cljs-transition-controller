@@ -5,8 +5,8 @@
               [fruits.random.api                  :as random]
               [reagent.core                       :as reagent]
               [transition-controller.config       :as config]
-              [transition-controller.env          :as env]
-              [transition-controller.side-effects :as side-effects]))
+              [transition-controller.side-effects :as side-effects]
+              [common-state.api :as common-state]))
 
 ;; ----------------------------------------------------------------------------
 ;; ----------------------------------------------------------------------------
@@ -28,9 +28,9 @@
   ;   Default: 0
   ;  ...}
   [controller-id {:keys [transition-duration] :or {transition-duration 0}}]
-  (let [active-content-id (env/get-controller-state controller-id :active-content-id)
-        content-pool      (env/get-controller-state controller-id :content-pool)
-        content-visible?  (env/get-controller-state controller-id :content-visible?)]
+  (let [active-content-id (common-state/get-state :transition-controller :controllers controller-id :active-content-id)
+        content-pool      (common-state/get-state :transition-controller :controllers controller-id :content-pool)
+        content-visible?  (common-state/get-state :transition-controller :controllers controller-id :content-visible?)]
        (letfn [(f0 [[id content]]
                    [:> css-transition {:in            (and content-visible? (= id active-content-id))
                                        :timeout       transition-duration

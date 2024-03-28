@@ -6,7 +6,7 @@
               [reagent.tools.api           :as reagent.tools]
               [time.api                    :as time]
               [transition-controller.env   :as env]
-              [transition-controller.state :as state]))
+              [common-state.api :as common-state]))
 
 ;; ----------------------------------------------------------------------------
 ;; ----------------------------------------------------------------------------
@@ -24,7 +24,7 @@
   ; @usage
   ; (store-content! :my-transition-controller :xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx [:div "My content"])
   [controller-id content-id content]
-  (swap! state/CONTROLLERS update-in [controller-id :content-pool] vector/conj-item [content-id content]))
+  (common-state/update-state! :transition-controller :controllers update-in [controller-id :content-pool] vector/conj-item [content-id content]))
 
 (defn activate-content!
   ; @ignore
@@ -38,7 +38,7 @@
   ; @usage
   ; (activate-content! :my-transition-controller :xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx)
   [controller-id content-id]
-  (swap! state/CONTROLLERS assoc-in [controller-id :active-content-id] content-id))
+  (common-state/assoc-state! :transition-controller :controllers controller-id :active-content-id content-id))
 
 (defn set-content-visibility!
   ; @ignore
@@ -52,7 +52,7 @@
   ; @usage
   ; (set-content-visibility! :my-transition-controller)
   [controller-id visible?]
-  (swap! state/CONTROLLERS assoc-in [controller-id :content-visible?] visible?))
+  (common-state/assoc-state! :transition-controller :controllers controller-id :content-visible? visible?))
 
 ;; ----------------------------------------------------------------------------
 ;; ----------------------------------------------------------------------------
@@ -69,7 +69,7 @@
   ; @usage
   ; (mark-controller-as-mounted! :my-transition-controller {...})
   [controller-id _]
-  (swap! state/CONTROLLERS update controller-id assoc :mounted? true))
+  (common-state/assoc-state! :transition-controller :controllers controller-id :mounted? true))
 
 (defn store-controller-settings!
   ; @ignore
@@ -87,8 +87,8 @@
   ; @usage
   ; (store-controller-settings! :my-transition-controller {...})
   [controller-id {:keys [rerender-same? transition-duration]}]
-  (swap! state/CONTROLLERS update controller-id merge {:rerender-same?      rerender-same?
-                                                       :transition-duration transition-duration}))
+  (common-state/update-state! :transition-controller :controllers update controller-id merge {:rerender-same?      rerender-same?
+                                                                                              :transition-duration transition-duration}))
 
 (defn clear-former-contents!
   ; @ignore
@@ -102,10 +102,10 @@
   ; @usage
   ; (clear-former-contents! :my-transition-controller :xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx)
   [controller-id content-id]
-  (let [active-content-id (env/get-controller-state controller-id :active-content-id)]
+  (let [active-content-id (common-state/get-state :transition-controller :controllers controller-id :active-content-id)]
        (when (= content-id active-content-id)
-             (swap! state/CONTROLLERS update-in [controller-id :content-pool]       vector/keep-last-item)
-             (swap! state/CONTROLLERS update-in [controller-id :content-lifecycles] map/keep-key content-id))))
+             (common-state/update-state! :transition-controller :controllers update-in [controller-id :content-pool]       vector/keep-last-item)
+             (common-state/update-state! :transition-controller :controllers update-in [controller-id :content-lifecycles] map/keep-key content-id))))
 
 (defn clear-controller-state!
   ; @ignore
@@ -119,7 +119,7 @@
   ; @usage
   ; (clear-controller-state! :my-transition-controller {...})
   [controller-id _]
-  (swap! state/CONTROLLERS dissoc controller-id))
+  (common-state/dissoc-state! :transition-controller :controllers controller-id))
 
 ;; ----------------------------------------------------------------------------
 ;; ----------------------------------------------------------------------------
@@ -135,9 +135,9 @@
   ; (set-content! :my-transition-controller [:div "My content"])
   [controller-id content]
   (let [content-id          (random/generate-keyword)
-        active-content      (env/get-active-content   controller-id)
-        transition-duration (env/get-controller-state controller-id :transition-duration)
-        rerender-same?      (env/get-controller-state controller-id :rerender-same?)]
+        active-content      (env/get-active-content controller-id)
+        transition-duration (common-state/get-state :transition-controller :controllers controller-id :transition-duration)
+        rerender-same?      (common-state/get-state :transition-controller :controllers controller-id :rerender-same?)]
        (when (or rerender-same? (not= active-content content))
              (store-content!          controller-id content-id content)
              (activate-content!       controller-id content-id)
